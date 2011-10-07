@@ -1,6 +1,6 @@
 Bundle.require :default
 
-require "ecircle/version"
+require 'ecircle/version'
 
 module Ecircle
   extend self
