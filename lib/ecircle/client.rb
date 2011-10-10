@@ -1,13 +1,5 @@
 module Ecircle
   class Client
-    attr_reader :session_token
-
-    LoginFailed = Class.new(RuntimeError)
-
-    def initialize
-      @session_token = nil
-    end
-
     def client
       @client ||= Savon::Client.new do
         wsdl.document =  Ecircle.configuration.wsdl
@@ -16,17 +8,47 @@ module Ecircle
       end
     end
 
-    def logon
-      @session_token = (client.request :logon do
+    def request_session_id
+      @response = client.request :logon do
         soap.body = {
-          :user => Ecircle.configuration.user,
-          :realm => Ecircle.configuration.realm,
+          :user   => Ecircle.configuration.user,
+          :realm  => Ecircle.configuration.realm,
           :passwd => Ecircle.configuration.password
         }
-      end).body[:logon_response][:logon_return].to_s
-    rescue Savon::SOAP::Fault => e
-      @session_token = nil
-      raise LoginFailed, "Msg: #{e.message}"
+      end
+      @response.body[:logon_response][:logon_return].to_s
+    end
+
+    def create_or_update_user_by_email email
+      session_id = request_session_id
+      @response = client.request :createOrUpdateUserByEmail do
+        soap.body = {
+          :session     => session_id,
+          :userXml     => "<user><email>#{email}</email></user>",
+          :sendMessage => false
+        }
+      end
+    end
+
+    def look_up_user_by_email email
+      session_id = request_session_id
+      @response = client.request :lookupUserByEmail do
+        soap.body = {
+          :session => session_id,
+          :email   => email
+        }
+      end
+    end
+
+    def send_parametrized_single_message_to_user user_id
+      session_id = request_session_id
+      @response = client.request :sendParametrizedSingleMessageToUser do
+        soap.body = {
+          :session           => session_id,
+          :singleMessageId   => 1,
+          :userId            => user_id
+        }
+      end
     end
   end
 end
