@@ -25,9 +25,10 @@ module Ecircle
         soap.body = {
           :session     => session_id,
           :userXml     => "<user><email>#{email}</email></user>",
-          :sendMessage => false
+          :sendMessage => 0
         }
       end
+      @response.body[:create_or_update_user_by_email_response][:create_or_update_user_by_email_return].to_s
     end
 
     def look_up_user_by_email email
