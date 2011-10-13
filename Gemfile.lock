@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     ecircle (0.0.1)
+      savon (= 0.9.7)
 
 GEM
   remote: http://rubygems.org/
