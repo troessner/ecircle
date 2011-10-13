@@ -1,9 +1,11 @@
 require 'bundler'
-Bundler.require(:default)
+Bundler.require :default
 
-require 'ecircle/version'
-require 'ecircle/configuration'
-require 'ecircle/client'
+dir = File.dirname(__FILE__)
+
+%w!version configuration client!.each do |file|
+  require File.join(dir, 'ecircle', file)
+end
 
 module Ecircle
   extend self
