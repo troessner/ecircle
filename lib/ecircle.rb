@@ -1,9 +1,9 @@
 require 'bundler'
 Bundler.require(:default)
 
-require 'lib/ecircle/version'
-require 'lib/ecircle/configuration'
-require 'lib/ecircle/client'
+require 'ecircle/version'
+require 'ecircle/configuration'
+require 'ecircle/client'
 
 module Ecircle
   extend self
@@ -18,5 +18,9 @@ module Ecircle
 
   def configure &block
     block.call configuration
+  end
+
+  def method_missing(method, *args, &block)
+    client.send method, *args, &block
   end
 end

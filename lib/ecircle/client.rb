@@ -41,12 +41,12 @@ module Ecircle
       end
     end
 
-    def send_parametrized_single_message_to_user user_id
+    def send_parametrized_single_message_to_user user_id, message_id
       session_id = request_session_id
       @response = client.request :sendParametrizedSingleMessageToUser do
         soap.body = {
           :session           => session_id,
-          :singleMessageId   => 1,
+          :singleMessageId   => message_id,
           :userId            => user_id
         }
       end
