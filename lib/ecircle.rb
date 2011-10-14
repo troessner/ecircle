@@ -1,4 +1,5 @@
 require 'bundler'
+require 'active_support'
 require 'savon'
 
 # TODO Improve requiring of gems.
