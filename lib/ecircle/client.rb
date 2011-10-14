@@ -31,23 +31,15 @@ module Ecircle
       @response.body[:create_or_update_user_by_email_response][:create_or_update_user_by_email_return].to_s
     end
 
-    def look_up_user_by_email email
-      session_id = request_session_id
-      @response = client.request :lookupUserByEmail do
-        soap.body = {
-          :session => session_id,
-          :email   => email
-        }
-      end
-    end
-
-    def send_parametrized_single_message_to_user user_id, message_id
+    def send_parametrized_single_message_to_user user_id, message_id, names = [], values = []
       session_id = request_session_id
       @response = client.request :sendParametrizedSingleMessageToUser do
         soap.body = {
           :session           => session_id,
           :singleMessageId   => message_id,
-          :userId            => user_id
+          :userId            => user_id,
+          :names             => names,
+          :values            => values
         }
       end
     end
