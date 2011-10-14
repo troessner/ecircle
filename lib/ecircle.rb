@@ -29,7 +29,9 @@ module Ecircle
     block.call configuration
   end
 
-  def method_missing(method, *args, &block)
-    client.send method, *args, &block
+  (Ecircle::Client.instance_methods(false) - [:client]).each do |meth|
+    define_singleton_method meth do |*args|
+      client.send meth, *args
+    end
   end
 end
