@@ -43,5 +43,14 @@ module Ecircle
         }
       end
     end
+
+    def asynchronous_newsletter_job_package(location_ecircle_id, emails)
+      session_id = request_session_id
+      @response = client.request :control, :request_id => 1234, :group_id => 4567 do
+        soap.body = {
+          :session           => session_id
+        }
+      end
+    end
   end
 end
