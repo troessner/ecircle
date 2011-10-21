@@ -1,5 +1,5 @@
 require 'bundler'
-require 'active_support'
+require 'active_support/all'
 require 'savon'
 
 # TODO Improve requiring of gems.
@@ -10,7 +10,7 @@ require 'savon'
 
 dir = File.dirname(__FILE__)
 
-%w!version configuration client!.each do |file|
+%w!version configuration client helper!.each do |file|
   require File.join(dir, 'ecircle', file)
 end
 

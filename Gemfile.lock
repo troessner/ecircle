@@ -2,12 +2,17 @@ PATH
   remote: .
   specs:
     ecircle (0.0.1)
+      active_support
+      i18n
       rake
       savon (>= 0.9.7)
 
 GEM
   remote: http://rubygems.org/
   specs:
+    active_support (3.0.0)
+      activesupport (= 3.0.0)
+    activesupport (3.0.0)
     akami (1.0.0)
       gyoku (>= 0.4.0)
     builder (3.0.0)
@@ -16,6 +21,7 @@ GEM
       builder (>= 2.1.2)
     httpi (0.9.5)
       rack
+    i18n (0.6.0)
     nokogiri (1.5.0)
     nori (1.0.2)
     rack (1.3.4)
