@@ -22,10 +22,9 @@ module Ecircle
     end
 
     def create_or_update_user_by_email email
-      session_id = request_session_id
       @response = client.request :createOrUpdateUserByEmail do
         soap.body = {
-          :session     => session_id,
+          :session     => request_session_id,
           :userXml     => "<user><email>#{email}</email></user>",
           :sendMessage => 0
         }
@@ -34,10 +33,9 @@ module Ecircle
     end
 
     def send_parametrized_single_message_to_user user_id, message_id, names = [], values = []
-      session_id = request_session_id
       @response = client.request :sendParametrizedSingleMessageToUser do
         soap.body = {
-          :session           => session_id,
+          :session           => request_session_id,
           :singleMessageId   => message_id,
           :userId            => user_id,
           :names             => names,
