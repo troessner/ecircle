@@ -1,7 +1,5 @@
 module Ecircle
   class Client
-    TARGET_CONTENT_ENCODING = 'ISO-8859-1'
-
     def client
       @client ||= Savon::Client.new do
         wsdl.document =  Ecircle.configuration.wsdl
@@ -10,7 +8,7 @@ module Ecircle
       end
     end
 
-    def request_session_id
+    def logon
       @response = client.request :logon do
         soap.body = {
           :user   => Ecircle.configuration.user,
@@ -22,9 +20,10 @@ module Ecircle
     end
 
     def create_or_update_user_by_email email
+      session_id = logon
       @response = client.request :createOrUpdateUserByEmail do
         soap.body = {
-          :session     => request_session_id,
+          :session     => session_id,
           :userXml     => "<user><email>#{email}</email></user>",
           :sendMessage => 0
         }
@@ -32,71 +31,41 @@ module Ecircle
       @response.body[:create_or_update_user_by_email_response][:create_or_update_user_by_email_return].to_s
     end
 
+    def create_member user_id, group_id, invite = false, sendMessage = false
+      session_id = logon
+      @response = client.request :createMember do
+        soap.body = {
+          :session     => session_id,
+          :userId      => user_id,
+          :groupId     => group_id,
+          :invite      => 0,
+          :sendMessage => 0
+        }
+      end
+      @response.body[:create_member_response][:create_member_return].to_s
+    end
+
+    def delete_member member_id
+      session_id = logon
+      @response = client.request :deleteMember do
+        soap.body = {
+          :session  => session_id,
+          :memberId => member_id
+        }
+      end
+      @response.body[:delete_member_response][:delete_member_return].to_s
+    end
+
     def send_parametrized_single_message_to_user user_id, message_id, names = [], values = []
       @response = client.request :sendParametrizedSingleMessageToUser do
         soap.body = {
-          :session           => request_session_id,
+          :session           => logon,
           :singleMessageId   => message_id,
           :userId            => user_id,
           :names             => names,
           :values            => values
         }
       end
-    end
-
-    def send_asynch_message_to_group(options)
-      xml = xml_for_asynch_calls(options)
-    end
-
-    def xml_for_asynch_calls(options)
-      xml = Builder::XmlMarkup.new(:indent => 2)
-      xml.instruct!
-      xml.control :xmlns => 'http://webservices.ecircle-ag.com/ecm', 'request-id' => options[:request_id], 'group-id' => options[:group_id] do
-        xml.message 'message-id' => 'new', 'delete' => 'false' do
-          xml.tag! 'sendout-preferences' do
-            xml.tag! 'object-handling', 'html-images' => 'untouched'
-            xml.tag! 'email-channel', 'preferred-format' => 'email-html-multipart'
-          end
-          xml.tag! 'send-date' do
-            xml.date Helper.date_format(options[:send_out_date])
-          end
-          xml.tag! 'send-report-address' do
-            xml.tag! 'email-address' do
-              xml.email options[:report_email]
-              xml.name "Send report for newsletter for location #{options[:location_name]} sent out on #{options[:send_out_date]}"
-            end
-          end
-          xml.tag! 'status-report', 'report-id' => 'new', 'delete' => 'false', 'user-tracking-details' => 'false',  'link-tracking-details' => 'false', 'bouncing-details' => 'false' do
-            xml.tag! 'report-address' do
-              xml.tag! 'email-address' do
-                xml.email options[:report_email]
-                xml.name "Status report for newsletter for location #{options[:location_name]} sent out on #{options[:send_out_date]}"
-              end
-            end
-            xml.tag! 'send-date' do
-              xml.date Helper.date_format(options[:send_date_for_report])
-            end
-          end
-          xml.content 'target-content-encoding' => TARGET_CONTENT_ENCODING do
-            xml.subject options[:subject], 'target-encoding' => TARGET_CONTENT_ENCODING
-            xml.text options[:text], 'target-content-encoding' => TARGET_CONTENT_ENCODING
-            xml.html options[:html], 'target-content-encoding' => TARGET_CONTENT_ENCODING
-          end
-        end
-        xml.tag! 'success-report-address' do
-          xml.tag! 'email-address' do
-            xml.email options[:report_email]
-            xml.name "Success report for newsletter for location #{options[:location_name]} sent out on #{options[:send_out_date]}"
-          end
-        end
-        xml.tag! 'failure-report-address' do
-          xml.tag! 'email-address' do
-            xml.email options[:report_email]
-            xml.name "Failure report for newsletter for location #{options[:location_name]} sent out on #{options[:send_out_date]}"
-          end
-        end
-      end
-      xml.target!
     end
   end
 end
