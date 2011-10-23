@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Ecircle::Client do
+describe Ecircle::JobPackage do
   before :all do
     date = 1.hour.from_now
     @options = {
@@ -67,7 +67,7 @@ xml
 
   describe 'xml_for_asynch_calls' do
     it 'should generate valid xml' do
-      Ecircle.xml_for_asynch_calls(@options).should == @doc
+      Ecircle::JobPackage.xml_for_asynch_calls(@options).should == @doc
     end
   end
 end
