@@ -8,29 +8,6 @@ module Ecircle
       end
     end
 
-    def logon
-      @response = client.request :logon do
-        soap.body = {
-          :user   => Ecircle.configuration.user,
-          :realm  => Ecircle.configuration.realm,
-          :passwd => Ecircle.configuration.password
-        }
-      end
-      @response.body[:logon_response][:logon_return].to_s
-    end
-
-    def create_or_update_user_by_email email
-      session_id = logon
-      @response = client.request :createOrUpdateUserByEmail do
-        soap.body = {
-          :session     => session_id,
-          :userXml     => "<user><email>#{email}</email></user>",
-          :sendMessage => 0
-        }
-      end
-      @response.body[:create_or_update_user_by_email_response][:create_or_update_user_by_email_return].to_s
-    end
-
     def create_member user_id, group_id, invite = false, sendMessage = false
       session_id = logon
       @response = client.request :createMember do
@@ -45,6 +22,18 @@ module Ecircle
       @response.body[:create_member_response][:create_member_return].to_s
     end
 
+    def create_or_update_user_by_email email
+      session_id = logon
+      @response = client.request :createOrUpdateUserByEmail do
+        soap.body = {
+          :session     => session_id,
+          :userXml     => "<user><email>#{email}</email></user>",
+          :sendMessage => 0
+        }
+      end
+      @response.body[:create_or_update_user_by_email_response][:create_or_update_user_by_email_return].to_s
+    end
+
     def delete_member member_id
       session_id = logon
       @response = client.request :deleteMember do
@@ -54,6 +43,17 @@ module Ecircle
         }
       end
       @response.body[:delete_member_response][:delete_member_return].to_s
+    end
+
+    def logon
+      @response = client.request :logon do
+        soap.body = {
+          :user   => Ecircle.configuration.user,
+          :realm  => Ecircle.configuration.realm,
+          :passwd => Ecircle.configuration.password
+        }
+      end
+      @response.body[:logon_response][:logon_return].to_s
     end
 
     def send_parametrized_single_message_to_user user_id, message_id, names = [], values = []

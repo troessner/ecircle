@@ -15,18 +15,18 @@ dir = File.dirname(__FILE__)
 end
 
 module Ecircle
-  extend self
+  class << self
+    def configuration
+      @configuration ||= Configuration.new
+    end
 
-  def configuration
-    @configuration ||= Configuration.new
-  end
+    def client
+      @client ||= Client.new
+    end
 
-  def client
-    @client ||= Client.new
-  end
-
-  def configure &block
-    block.call configuration
+    def configure &block
+      block.call configuration
+    end
   end
 
   (Ecircle::Client.instance_methods(false) - [:client]).each do |meth|
