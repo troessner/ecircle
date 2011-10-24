@@ -8,15 +8,15 @@ module Ecircle
       end
     end
 
-    def create_member user_id, group_id, invite = false, sendMessage = false
+    def create_member user_id, group_id, invite = false, send_message = false
       session_id = logon
       @response = client.request :createMember do
         soap.body = {
           :session     => session_id,
           :userId      => user_id,
           :groupId     => group_id,
-          :invite      => 0,
-          :sendMessage => 0
+          :invite      => invite.to_s,
+          :sendMessage => send_message.to_s
         }
       end
       @response.body[:create_member_response][:create_member_return].to_s
