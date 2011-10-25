@@ -57,9 +57,10 @@ module Ecircle
     end
 
     def send_parametrized_single_message_to_user user_id, message_id, names = [], values = []
+      session_id = logon
       @response = client.request :sendParametrizedSingleMessageToUser do
         soap.body = {
-          :session           => logon,
+          :session           => session_id,
           :singleMessageId   => message_id,
           :userId            => user_id,
           :names             => names,
