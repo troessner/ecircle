@@ -49,7 +49,7 @@ module Ecircle
       @response = client.request :logon do
         soap.body = {
           :user   => Ecircle.configuration.user,
-          :realm  => Ecircle.configuration.realm,
+          :realm  => Ecircle.configuration.sync_realm,
           :passwd => Ecircle.configuration.password
         }
       end
