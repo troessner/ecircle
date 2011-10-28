@@ -4,7 +4,7 @@ module Ecircle
 
     def self.send_async_message_to_group(options)
       client = Savon::Client.new do
-        wsdl.endpoint = 'http://webservices.ecircle-ag.com/ws'
+        wsdl.endpoint  = options[:endpoint]
         wsdl.namespace = "http://webservices.ecircleag.com/ws"
       end
 
