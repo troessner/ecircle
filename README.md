@@ -21,9 +21,7 @@ So far just a couple of methods:
 To do
 -------------
 
-* Rethink current structure e.g.
- * doing an explicit logon in every method is ugly at best
- * inefficient handling of session token (we could and should reuse it instead of requesting a new one every time)
+* Rethink current structure
 * Implement missing API methods
 * Specs
 * RDoc
