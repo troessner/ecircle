@@ -73,3 +73,8 @@ Ecircle.send_parametrized_single_message_to_user uid,
                                                 [ 'Tom', 'welcome!' ]
 
 ```
+
+Documentation
+-------------
+
+* [Online API Documentation](http://rubydoc.info/github/troessner/ecircle/master/frames)
