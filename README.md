@@ -17,6 +17,7 @@ So far just a couple of methods:
 * create_member
 * create_or_update_user_by_email
 * delete_member
+* logon (only for debugging purposes)
 * send_parametrized_single_message_to_user
 
 See the rdoc for details on arguments and return values: [TODO Add link]
@@ -24,10 +25,8 @@ See the rdoc for details on arguments and return values: [TODO Add link]
 To do
 -------------
 
-* Rethink current structure
 * Implement missing API methods
 * Specs
-* RDoc
 * Remove JobPackage from gem since this is highly specific
 
 Configuration
