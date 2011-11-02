@@ -20,7 +20,7 @@ So far just a couple of methods:
 * logon (only for debugging purposes)
 * send_parametrized_single_message_to_user
 
-See the rdoc for details on arguments and return values: [TODO Add link]
+See the [online API documentation](http://rubydoc.info/github/troessner/ecircle/master/frames) for details on arguments and return values
 
 To do
 -------------
