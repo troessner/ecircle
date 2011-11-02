@@ -14,13 +14,17 @@ GEM
       multi_json (~> 1.0)
     akami (1.0.0)
       gyoku (>= 0.4.0)
+    archive-tar-minitar (0.5.2)
     builder (3.0.0)
+    columnize (0.3.4)
     diff-lcs (1.1.3)
     gyoku (0.4.4)
       builder (>= 2.1.2)
     httpi (0.9.5)
       rack
     i18n (0.6.0)
+    linecache19 (0.5.12)
+      ruby_core_source (>= 0.1.4)
     multi_json (1.0.3)
     nokogiri (1.5.0)
     nori (1.0.2)
@@ -34,6 +38,16 @@ GEM
     rspec-expectations (2.6.0)
       diff-lcs (~> 1.1.2)
     rspec-mocks (2.6.0)
+    ruby-debug-base19 (0.11.25)
+      columnize (>= 0.3.1)
+      linecache19 (>= 0.5.11)
+      ruby_core_source (>= 0.1.4)
+    ruby-debug19 (0.11.6)
+      columnize (>= 0.3.1)
+      linecache19 (>= 0.5.11)
+      ruby-debug-base19 (>= 0.11.19)
+    ruby_core_source (0.1.5)
+      archive-tar-minitar (>= 0.5.2)
     savon (0.9.7)
       akami (~> 1.0)
       builder (>= 2.1.2)
@@ -44,6 +58,7 @@ GEM
       wasabi (~> 2.0)
     wasabi (2.0.0)
       nokogiri (>= 1.4.0)
+    yard (0.7.3)
 
 PLATFORMS
   ruby
@@ -51,3 +66,5 @@ PLATFORMS
 DEPENDENCIES
   ecircle!
   rspec (= 2.6.0)
+  ruby-debug19
+  yard
