@@ -55,7 +55,7 @@ module Ecircle
       ensuring_logon do
         @response = client.request :createMember do
           soap.body = {
-            :session     => @auth_token,
+            :session     => auth_token,
             :userId      => user_id,
             :groupId     => group_id,
             :invite      => invite.to_s,
@@ -70,7 +70,7 @@ module Ecircle
       ensuring_logon do
         @response = client.request :createOrUpdateUserByEmail do
           soap.body = {
-            :session     => @auth_token,
+            :session     => auth_token, # TODO We can't use @auth_token here cause then the session_id is nil. Why?
             :userXml     => "<user><email>#{email}</email></user>",
             :sendMessage => 0
           }
@@ -83,7 +83,7 @@ module Ecircle
       ensuring_logon do
         @response = client.request :deleteMember do
           soap.body = {
-            :session  => @auth_token,
+            :session  => auth_token,
             :memberId => member_id
           }
         end
@@ -106,7 +106,7 @@ module Ecircle
       ensuring_logon do
         @response = client.request :sendParametrizedSingleMessageToUser do
           soap.body = {
-            :session           => @auth_token,
+            :session           => auth_token,
             :singleMessageId   => message_id,
             :userId            => user_id,
             :names             => names,
