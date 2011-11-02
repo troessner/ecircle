@@ -35,11 +35,13 @@ Configuration
 
 ```Ruby
 Ecircle.configure do |config|
-  config.user     = 'your@user.com'
-  config.realm    = 'http://your.realm.com'
-  config.password = 'your_password'
+  config.user       = 'your@user.com'
+  config.sync_realm = 'http://your.realm.com'
+  config.password   = 'your_password'
 end
 ```
+
+The reason for the unusual configuration setting "sync_realm" is that there is also an asynchronous ecircle API with a different realm.
 
 Logon
 -------------
