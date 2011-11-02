@@ -5,7 +5,9 @@ Synopsis
 
 This gem aims to be a full-fledged solution for the ecircle API, the [synchronous one](http://webservices.ecircle-ag.com/soap/javadoc/com/ecircleag/webservices/EcMApi.html) and the [asynchronous one](http://developer.ecircle-ag.com/apiwiki/wiki/AsynchronousAPI).
 
-This is WIP and far from complete.
+The API coverage is far from complete.
+
+However, the existing API coverage can be considered stable and is used in production.
 
 Features
 -------------
