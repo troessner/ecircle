@@ -16,14 +16,18 @@ end
 
 module Ecircle
   class << self
+
+    #@private
     def configuration
       @configuration ||= Configuration.new
     end
 
+    #@private
     def client
       @client ||= Client.new
     end
 
+    #@private
     def configure &block
       block.call configuration
     end

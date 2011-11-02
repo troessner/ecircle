@@ -2,6 +2,7 @@ module Ecircle
   module JobPackage
     TARGET_CONTENT_ENCODING = 'ISO-8859-1'
 
+    # @private
     def self.send_async_message_to_group(options)
       client = Savon::Client.new do
         wsdl.endpoint  = options[:endpoint]
@@ -17,6 +18,7 @@ module Ecircle
       end
     end
 
+    # @private
     def self.soap_body(options)
       xml = Builder::XmlMarkup.new(:indent => 2)
       xml.control 'xmlns' => "http://webservices.ecircle-ag.com/ecm", 'request-id' => options[:request_id], 'group-id' => options[:group_id] do

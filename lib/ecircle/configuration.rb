@@ -4,8 +4,10 @@ module Ecircle
     ENDPOINT  = 'http://webservices.ecircle-ag.com/rpc'
     NAMESPACE = "http://webservices.ecircleag.com/rpcns"
 
+    # @private
     attr_accessor :user, :password, :sync_realm, :async_realm, :wsdl, :endpoint, :namespace
 
+    # @private
     def initialize
       @wsdl      = WSDL
       @endpoint  = ENDPOINT
