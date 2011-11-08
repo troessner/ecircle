@@ -34,12 +34,18 @@ module Ecircle
         block.call
       rescue Savon::SOAP::Fault => e
         # If we are here that probably means that our session token has expired.
-        if first_try
-          first_try = false
-          @auth_token = logon
-          retry
+        response = e.to_hash
+        if response[:fault][:detail][:fault][:code] == '502'
+          if first_try
+            first_try = false
+            @auth_token = logon
+            retry
+          else
+            puts "!!! Could not re-authenticate after session expired: #{e.to_hash.inspect} !!!"
+            raise
+          end
         else
-          puts "!!! Could not re-authenticate after session expired: #{e.to_hash.inspect} !!!"
+          puts  "!!! Got an unexpected fault code from Savon: #{e.to_hash.inspect} !!!"
           raise
         end
       end
