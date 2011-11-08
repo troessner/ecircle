@@ -10,7 +10,7 @@ require 'savon'
 
 dir = File.dirname(__FILE__)
 
-%w!version configuration client helper job_package!.each do |file|
+%w!version configuration client helper job_package wrapped_response!.each do |file|
   require File.join(dir, 'ecircle', file)
 end
 

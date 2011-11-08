@@ -101,6 +101,33 @@ module Ecircle
 
     # Delete a member.
     #
+    # @param [Integer] group_id ecircle group id
+    # @return [WrappedResponse]
+    def delete_group group_id
+      ensuring_logon do
+        # In case we pass in a non existing member id we'll get a corresponding exception, so we need to catch this here as well.
+        begin
+          @response = client.request :deleteGroup do
+            soap.body = {
+              :session  => auth_token,
+              :memberId => group_id
+            }
+          end
+        rescue Savon::SOAP::Fault => e
+          if e.to_hash[:fault][:detail][:fault][:code] == '500'
+            # "100" means member ID didn't exist so just return false.
+            return WrappedResponse.new(:success => false, :message => e.to_hash[:fault][:detail][:fault][:error_message])
+          else
+            # Re-raise cause something else went wrong.
+            raise
+          end
+        end
+      end
+      true
+    end
+
+    # Delete a member.
+    #
     # @param [Integer] member_id ecircle member id
     # @return [Boolean]
     def delete_member member_id
