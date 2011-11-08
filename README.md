@@ -1,3 +1,6 @@
+Travis Build Status
+-------------
+
 [![Build Status](https://secure.travis-ci.org/troessner/ecircle.png)](http://travis-ci.org/troessner/ecircle)
 
 Synopsis
@@ -96,9 +99,9 @@ Ecircle.logout
 
 ```Ruby
 Ecircle.configure do |config|
-  config.user       = 'your@user.com'
+  config.user        = 'your@user.com'
   config.async_realm = 'http://your.async.realm.com' # IMPORTANT - different realm.
-  config.password   = 'your_password'
+  config.password    = 'your_password'
 end
 
 @options = {
