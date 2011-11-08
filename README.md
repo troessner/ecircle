@@ -5,29 +5,40 @@ Synopsis
 
 This gem aims to be a full-fledged solution for the ecircle API, the [synchronous one](http://webservices.ecircle-ag.com/soap/javadoc/com/ecircleag/webservices/EcMApi.html) and the [asynchronous one](http://developer.ecircle-ag.com/apiwiki/wiki/AsynchronousAPI).
 
-The API coverage is far from complete.
+The API coverage is far from complete, however as far as I can see the most useful / frequent methods are covered.
 
-However, the existing API coverage can be considered stable and is used in production.
+The existing API methods can be considered stable and are used in production.
 
 Features
 -------------
 
-So far just a couple of methods:
+###Synchronous API
 
-* create_member
-* create_or_update_user_by_email
-* delete_member
+The following methods are implemented:
+
+* createMember
+* createOrUpdateUserByEmail
+* deleteGroup
+* deleteMember
 * logon (only for debugging purposes)
-* send_parametrized_single_message_to_user
+* logout
+* sendParametrizedSingleMessageToUser
 
 See the [online API documentation](http://rubydoc.info/github/troessner/ecircle/master/frames) for details on arguments and return values
+
+###Asnchronous API
+
+Since the asynchronous API is neither documented by ecircle nor intuitive at all, you're on your own. Jump to the examples section and good luck.
 
 To do
 -------------
 
-* Implement missing API methods
-* Specs
-* Remove JobPackage from gem since this is highly specific
+* Implement missing API methods:
+ * createOrUpdateGroup
+ * deleteUser
+ * deleteUserByEmail
+ * lookupGroups
+* Write specs
 
 Configuration
 -------------
@@ -52,6 +63,8 @@ Session tokens will be re-used to keep the number of session related traffic to 
 Examples
 -------------
 
+### Synchronous API
+
 ```Ruby
 # Given you have called Ecircle.configure appropriatly...
 
@@ -72,6 +85,35 @@ Ecircle.send_parametrized_single_message_to_user uid,
                                                 [ :name, :message ],
                                                 [ 'Tom', 'welcome!' ]
 
+# 5.) Delete the group
+Ecircle.delete_group your_group_id
+
+# 6.) Log out
+Ecircle.logout
+
+```
+### Asynchronous API
+
+```Ruby
+Ecircle.configure do |config|
+  config.user       = 'your@user.com'
+  config.async_realm = 'http://your.async.realm.com' # IMPORTANT - different realm.
+  config.password   = 'your_password'
+end
+
+@options = {
+  :endpoint                     => 'http://your.domain/eC-MessageService',
+  :request_id                   => '1234',
+  :group_id                     => '5678',
+  :send_out_date                => 70.minutes.from_now, # Must be at least one hour in the future!
+  :send_date_for_report         => 140.minutes.from_now,  # Must be at least one hour in the future *after* dispatching!
+  :report_email                 => 'your@report.de',
+  :subject                      => 'Newsletter',
+  :text                         => 'Newsletter text content',
+  :html                         => 'Newsletter html content'
+}
+
+Ecircle::JobPackage.send_async_message_to_group @options
 ```
 
 Documentation
