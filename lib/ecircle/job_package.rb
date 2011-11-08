@@ -9,7 +9,7 @@ module Ecircle
         wsdl.namespace = "http://webservices.ecircleag.com/ws"
       end
 
-      response = client.request :postGroupRequest,  'xmlns' => 'http://webservices.ecircle-ag.com/ws' do
+      client.request :postGroupRequest,  'xmlns' => 'http://webservices.ecircle-ag.com/ws' do
         soap.header =  { :authenticate => { :realm    => Ecircle.configuration.async_realm,
                                             :email    => Ecircle.configuration.user,
                                             :password => Ecircle.configuration.password },
@@ -33,14 +33,14 @@ module Ecircle
           xml.tag! 'send-report-address' do
             xml.tag! 'email-address' do
               xml.email options[:report_email]
-              xml.name "Send report for newsletter for location #{options[:location_name]} sent out on #{options[:send_out_date]}"
+              xml.name options[:report_email_name]
             end
           end
           xml.tag! 'status-report', 'report-id' => 'new', 'delete' => 'false', 'user-tracking-details' => 'false',  'link-tracking-details' => 'false', 'bouncing-details' => 'false' do
             xml.tag! 'report-address' do
               xml.tag! 'email-address' do
                 xml.email options[:report_email]
-                xml.name "Status report for newsletter for location #{options[:location_name]} sent out on #{options[:send_out_date]}"
+                xml.name options[:report_email_name]
               end
             end
             xml.tag! 'send-date' do
@@ -56,13 +56,13 @@ module Ecircle
         xml.tag! 'success-report-address' do
           xml.tag! 'email-address' do
             xml.email options[:report_email]
-            xml.name "Success report for newsletter for location #{options[:location_name]} sent out on #{options[:send_out_date]}"
+            xml.name options[:report_email_name]
           end
         end
         xml.tag! 'failure-report-address' do
           xml.tag! 'email-address' do
             xml.email options[:report_email]
-            xml.name "Failure report for newsletter for location #{options[:location_name]} sent out on #{options[:send_out_date]}"
+            xml.name options[:report_email_name]
           end
         end
       end
