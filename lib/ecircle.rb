@@ -10,7 +10,7 @@ require 'savon'
 
 dir = File.dirname(__FILE__)
 
-%w!version configuration client helper job_package wrapped_response!.each do |file|
+%w!api version configuration helper job_package wrapped_response!.each do |file|
   require File.join(dir, 'ecircle', file)
 end
 
@@ -23,8 +23,8 @@ module Ecircle
     end
 
     #@private
-    def client
-      @client ||= Client.new
+    def api
+      @api ||= Api.new
     end
 
     #@private
@@ -33,9 +33,9 @@ module Ecircle
     end
   end
 
-  (Ecircle::Client.instance_methods(false) - [:client]).each do |meth|
+  (Ecircle::Api.instance_methods(false) - [:client]).each do |meth|
     define_singleton_method meth do |*args|
-      client.send meth, *args
+      api.send meth, *args
     end
   end
 end

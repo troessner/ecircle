@@ -1,5 +1,5 @@
 module Ecircle
-  class Client
+  class Api
     #@private
     attr_accessor :auth_token
 
