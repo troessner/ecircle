@@ -108,6 +108,7 @@ end
   :send_out_date                => 70.minutes.from_now, # Must be at least one hour in the future!
   :send_date_for_report         => 140.minutes.from_now,  # Must be at least one hour in the future *after* dispatching!
   :report_email                 => 'your@report.de',
+  :report_email_name            => 'Your name',
   :subject                      => 'Newsletter',
   :text                         => 'Newsletter text content',
   :html                         => 'Newsletter html content'
