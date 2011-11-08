@@ -169,6 +169,17 @@ module Ecircle
       @response.body[:logon_response][:logon_return].to_s
     end
 
+    # Log out. Uses the last session token.
+    #
+    # @return nil
+    def logout
+      client.request :logout do
+        soap.body = {
+          :session  => auth_token,
+        }
+      end
+    end
+
     # Send a parametrized single message to user - you need an existing ecircle template ID for this.
     #
     # @param [Integer] user_id ecircle user_id
