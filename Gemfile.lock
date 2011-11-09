@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ecircle (0.0.7)
+    ecircle (0.0.8)
       activesupport
       i18n
       rake
