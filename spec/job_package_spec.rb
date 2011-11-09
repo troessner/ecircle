@@ -9,6 +9,7 @@ describe Ecircle::JobPackage do
       :send_out_date                => date,
       :send_date_for_report         => date,
       :report_email                 => 'report@dealvertise.de',
+      :report_email_name            => 'Your name',
       :location_name                => 'Berlin',
       :subject                      => 'Berlin newsletter',
       :text                         => 'Newsletter text content',
@@ -28,14 +29,14 @@ describe Ecircle::JobPackage do
     <send-report-address>
       <email-address>
         <email>#{@options[:report_email]}</email>
-        <name>Send report for newsletter for location #{@options[:location_name]} sent out on #{@options[:send_out_date]}</name>
+        <name>Your name</name>
       </email-address>
     </send-report-address>
     <status-report report-id="new" delete="false" user-tracking-details="false" link-tracking-details="false" bouncing-details="false">
       <report-address>
         <email-address>
           <email>#{@options[:report_email]}</email>
-          <name>Status report for newsletter for location #{@options[:location_name]} sent out on #{@options[:send_out_date]}</name>
+          <name>Your name</name>
         </email-address>
       </report-address>
       <send-date>
@@ -51,13 +52,13 @@ describe Ecircle::JobPackage do
   <success-report-address>
     <email-address>
       <email>#{@options[:report_email]}</email>
-      <name>Success report for newsletter for location #{@options[:location_name]} sent out on #{@options[:send_out_date]}</name>
+      <name>Your name</name>
     </email-address>
   </success-report-address>
   <failure-report-address>
     <email-address>
       <email>#{@options[:report_email]}</email>
-      <name>Failure report for newsletter for location #{@options[:location_name]} sent out on #{@options[:send_out_date]}</name>
+      <name>Your name</name>
     </email-address>
   </failure-report-address>
 </control>
