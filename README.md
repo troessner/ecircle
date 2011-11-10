@@ -50,7 +50,7 @@ Installation
 Either as a gem:
 
     gem install ecircle
-    
+
 or via Bundler by adding it to your Gemfile.
 
 
@@ -113,7 +113,7 @@ Note the async_realm in the configure block, this another realm as for the sync 
       config.async_realm = 'http://your.async.realm.com' # IMPORTANT - different realm.
       config.password    = 'your_password'
     end
-    
+
     @options = {
       :endpoint                     => 'http://your.domain/eC-MessageService',
       :request_id                   => '1234',
@@ -126,7 +126,7 @@ Note the async_realm in the configure block, this another realm as for the sync 
       :text                         => 'Newsletter text content',
       :html                         => 'Newsletter html content'
     }
-    
+
     Ecircle::JobPackage.send_async_message_to_group @options
 
 Documentation
