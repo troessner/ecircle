@@ -43,16 +43,26 @@ To do
  * lookupGroups
 * Write specs
 
+
+Installation
+-------------
+
+Either as a gem:
+
+    gem install ecircle
+    
+or via Bundler by adding it to your Gemfile.
+
+
 Configuration
 -------------
 
-```Ruby
-Ecircle.configure do |config|
-  config.user       = 'your@user.com'
-  config.sync_realm = 'http://your.realm.com'
-  config.password   = 'your_password'
-end
-```
+    Ecircle.configure do |config|
+      config.user       = 'your@user.com'
+      config.sync_realm = 'http://your.realm.com'
+      config.password   = 'your_password'
+    end
+
 
 The reason for the unusual configuration setting "sync_realm" is that there is also an asynchronous ecircle API with a different realm.
 
@@ -68,57 +78,56 @@ Examples
 
 ### Synchronous API
 
-```Ruby
-# Given you have called Ecircle.configure appropriatly...
+    # Given you have called Ecircle.configure appropriatly...
 
-# 1.) Create a user
-uid = Ecircle.create_or_update_user_by_email 'your@email.com'
-puts "Ecircle user ID: #{uid}"
+    # 1.) Create a user
+    uid = Ecircle.create_or_update_user_by_email 'your@email.com'
+    puts "Ecircle user ID: #{uid}"
 
-# 2.) Add this user as a member to a group - e.g. for newsletters
-mid = Ecircle.create_member uid, 'your_group_id'
-puts "Ecircle member Id: #{mid}"
+    # 2.) Add this user as a member to a group - e.g. for newsletters
+    mid = Ecircle.create_member uid, 'your_group_id'
+    puts "Ecircle member Id: #{mid}"
 
-# 3.) Delete member from group - e.g. when he unsubscribes
-Ecircle.delete_member mid
+    # 3.) Delete member from group - e.g. when he unsubscribes
+    Ecircle.delete_member mid
 
-# 4.) Send the user a transactional email:
-Ecircle.send_parametrized_single_message_to_user uid,
-                                                your_template_id_at_ecircle,
-                                                [ :name, :message ],
-                                                [ 'Tom', 'welcome!' ]
+    # 4.) Send the user a transactional email:
+    Ecircle.send_parametrized_single_message_to_user uid,
+                                                    your_template_id_at_ecircle,
+                                                    [ :name, :message ],
+                                                    [ 'Tom', 'welcome!' ]
 
-# 5.) Delete the group
-Ecircle.delete_group your_group_id
+    # 5.) Delete the group
+    Ecircle.delete_group your_group_id
 
-# 6.) Log out
-Ecircle.logout
+    # 6.) Log out
+    Ecircle.logout
 
-```
+
 ### Asynchronous API
 
-```Ruby
-Ecircle.configure do |config|
-  config.user        = 'your@user.com'
-  config.async_realm = 'http://your.async.realm.com' # IMPORTANT - different realm.
-  config.password    = 'your_password'
-end
+Note the async_realm in the configure block, this another realm as for the sync API.
 
-@options = {
-  :endpoint                     => 'http://your.domain/eC-MessageService',
-  :request_id                   => '1234',
-  :group_id                     => '5678',
-  :send_out_date                => 70.minutes.from_now, # Must be at least one hour in the future!
-  :send_date_for_report         => 140.minutes.from_now,  # Must be at least one hour in the future *after* dispatching!
-  :report_email                 => 'your@report.de',
-  :report_email_name            => 'Your name',
-  :subject                      => 'Newsletter',
-  :text                         => 'Newsletter text content',
-  :html                         => 'Newsletter html content'
-}
-
-Ecircle::JobPackage.send_async_message_to_group @options
-```
+    Ecircle.configure do |config|
+      config.user        = 'your@user.com'
+      config.async_realm = 'http://your.async.realm.com' # IMPORTANT - different realm.
+      config.password    = 'your_password'
+    end
+    
+    @options = {
+      :endpoint                     => 'http://your.domain/eC-MessageService',
+      :request_id                   => '1234',
+      :group_id                     => '5678',
+      :send_out_date                => 70.minutes.from_now, # Must be at least one hour in the future!
+      :send_date_for_report         => 140.minutes.from_now,  # Must be at least one hour in the future *after* dispatching!
+      :report_email                 => 'your@report.de',
+      :report_email_name            => 'Your name',
+      :subject                      => 'Newsletter',
+      :text                         => 'Newsletter text content',
+      :html                         => 'Newsletter html content'
+    }
+    
+    Ecircle::JobPackage.send_async_message_to_group @options
 
 Documentation
 -------------
