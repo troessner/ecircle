@@ -59,7 +59,7 @@ module Ecircle
     #
     # @param [Integer] user_id ecircle user_id
     # @param [Integer] group_id ecircle group_id
-    # @param [Boolean] invite send an invite by ecircle
+    # @param [Boolean] invite send an additional invite mail
     # @param [Boolean] send_message send a message by ecircle
     # @return [WrappedResponse]
     def create_member user_id, group_id, invite = false, send_message = false
