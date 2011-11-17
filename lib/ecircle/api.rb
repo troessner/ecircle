@@ -93,7 +93,7 @@ module Ecircle
           client.request :createOrUpdateGroup do
             soap.body = {
               :session   => auth_token,
-              'wsdl:groupXml'  => Helper.build_group_xml(group_attributes)
+              :groupXml  => Helper.build_group_xml(group_attributes)
             }
           end
         rescue Savon::SOAP::Fault => e
