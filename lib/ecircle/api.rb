@@ -81,6 +81,28 @@ module Ecircle
       end
     end
 
+    # Create or update group
+    # see http://developer.ecircle-ag.com/apiwiki/wiki/SynchronousSoapAPI#section-SynchronousSoapAPI-GroupObjectExample
+    # for an example of the group xml
+    # @param [Hash] group_xml, in it's most simple form a { :name => 'your name', :description => 'desc', ':email => 'test@test.com' } is sufficient
+    # @return [WrappedResponse]
+    # Important note: `email` must be unique across all groups AND must be a subdomain of the system you registered at ecircle.
+    def create_or_update_group group_attributes
+      ensuring_logon do
+        begin
+          client.request :createOrUpdateGroup do
+            soap.body = {
+              :session   => auth_token,
+              'wsdl:groupXml'  => Helper.build_group_xml(group_attributes)
+            }
+          end
+        rescue Savon::SOAP::Fault => e
+          return WrappedResponse.new(e)
+        end
+      WrappedResponse.new(:success => true)
+      end
+    end
+
     # Create or update user by email
     # see http://developer.ecircle-ag.com/apiwiki/wiki/SynchronousSoapAPI#section-SynchronousSoapAPI-UserObjectExample
     # for an example of the user xml

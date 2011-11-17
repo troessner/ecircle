@@ -15,5 +15,18 @@ module Ecircle
         xml << "<#{name}>#{value}</#{name}>"
       end+'</user>'
     end
+
+    def build_group_xml attrs
+      # Important note: Actually I have no idea what ecircle wants here. This works for me. Just go with the flow.
+      xml = Builder::XmlMarkup.new
+      xml.tag! 'group', :xmlns => 'http://webservices.ecircle-ag.com/ecm', 'group-id' => 'new', 'preferred-channel' => 'email' do
+        xml.name attrs[:name]
+        xml.description attrs[:description]
+        xml.tag! 'email-channel' do
+          xml.email attrs[:email]
+        end
+      end
+      xml.target!.gsub('"', "'").gsub('\\', '')
+    end
   end
 end
