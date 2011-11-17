@@ -77,7 +77,7 @@ module Ecircle
         rescue Savon::SOAP::Fault => e
           return WrappedResponse.new(e)
         end
-        WrappedResponse.new(:success => true, :ecircle_id => @response.body[:create_member_response][:create_member_return].to_s)
+        WrappedResponse.new :success => true, :ecircle_id => @response.body[:create_member_response][:create_member_return].to_s
       end
     end
 
@@ -90,7 +90,7 @@ module Ecircle
     def create_or_update_group group_attributes
       ensuring_logon do
         begin
-          client.request :createOrUpdateGroup do
+          @response = client.request :createOrUpdateGroup do
             soap.body = {
               :session   => auth_token,
               :groupXml  => Helper.build_group_xml(group_attributes)
@@ -99,7 +99,7 @@ module Ecircle
         rescue Savon::SOAP::Fault => e
           return WrappedResponse.new(e)
         end
-      WrappedResponse.new(:success => true)
+      WrappedResponse.new :success => true, :ecircle_id => @response[:create_or_update_group_response][:create_or_update_group_return].to_i
       end
     end
 
@@ -108,18 +108,21 @@ module Ecircle
     # for an example of the user xml
     # @param [Hash] user_xml, in it's most simple form a { :email => 'test@test.com' } is sufficient
     # @return [Integer] the user id
-    # TODO Error handling is missing.
-    # TODO Return a wrapped response.
     def create_or_update_user_by_email user_attributes
       ensuring_logon do
-        @response = client.request :createOrUpdateUserByEmail do
-          soap.body = {
-            :session     => auth_token, # TODO We can't use @auth_token here cause then the session_id is nil. Why?
-            :userXml     => Helper.build_user_xml(user_attributes),
-            :sendMessage => 0
-          }
+        begin
+          @response = client.request :createOrUpdateUserByEmail do
+            soap.body = {
+              :session     => auth_token, # TODO We can't use @auth_token here cause then the session_id is nil. Why?
+              :userXml     => Helper.build_user_xml(user_attributes),
+              :sendMessage => 0
+            }
+          end
+        rescue Savon::SOAP::Fault => e
+          return WrappedResponse.new(e)
         end
-        @response.body[:create_or_update_user_by_email_response][:create_or_update_user_by_email_return].to_i
+        WrappedResponse.new :success => true,
+                            :ecircle_id => @response.body[:create_or_update_user_by_email_response][:create_or_update_user_by_email_return].to_i
       end
     end
 
