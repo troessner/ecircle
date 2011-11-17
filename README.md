@@ -36,6 +36,7 @@ Since the asynchronous API is neither documented by ecircle nor intuitive at all
 To do
 -------------
 
+* Fix TODOs in source code
 * Implement missing API methods:
  * createOrUpdateGroup
  * deleteUser
@@ -72,6 +73,25 @@ Logon
 The ecircle gem does the session handling for you, there is no need to logon explicitly.
 Session tokens will be re-used to keep the number of session related traffic to a minimum.
 
+Response
+-------------
+
+The ecircle gem will always return a wrapped response. Except for when it doesn't because I didn't find the time which is
+for create_or_update_user_by_email and logon (see examples below or the API doc).
+
+The wrapped response object is just a neat abstraction to hide Ecircle's horrible, horrible error handling from you and provides several methods for doing so.
+
+The most usefull (and self-explanatory) would be:
+
+* success?
+* error_message
+* fault_code
+* ecircle_id IF the API returns an ID an success, e.g. for create_member and create_or_update_user_by_email
+* convenience methods which depend on your (failed request), e.g.:
+  * member_does_not_exist? (relevant for create_member requests)
+  * TODO Explain all convenience methods.
+
+For details see [here](http://rubydoc.info/github/troessner/ecircle/master/Ecircle/WrappedResponse)
 
 Examples
 -------------
@@ -85,8 +105,8 @@ Examples
     puts "Ecircle user ID: #{uid}"
 
     # 2.) Add this user as a member to a group - e.g. for newsletters
-    mid = Ecircle.create_member uid, 'your_group_id'
-    puts "Ecircle member Id: #{mid}"
+    response = Ecircle.create_member uid, 'your_group_id'
+    puts "Ecircle member Id: #{response.ecircle_id}"
 
     # 3.) Delete member from group - e.g. when he unsubscribes
     Ecircle.delete_member mid
