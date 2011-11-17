@@ -75,12 +75,7 @@ module Ecircle
             }
           end
         rescue Savon::SOAP::Fault => e
-          wrapped_response = WrappedResponse.new(e)
-          if wrapped_response.no_such_user? || wrapped_response.no_such_group_when_a_user_was_given
-            return wrapped_response
-          else
-            raise # Re-raise cause something else went wrong.
-          end
+          return WrappedResponse.new(e)
         end
         WrappedResponse.new(:success => true, :ecircle_id => @response.body[:create_member_response][:create_member_return].to_s)
       end
@@ -92,6 +87,7 @@ module Ecircle
     # @param [Hash] user_xml, in it's most simple form a { :email => 'test@test.com' } is sufficient
     # @return [Integer] the user id
     # TODO Error handling is missing.
+    # TODO Return a wrapped response.
     def create_or_update_user_by_email user_attributes
       ensuring_logon do
         @response = client.request :createOrUpdateUserByEmail do
@@ -119,12 +115,7 @@ module Ecircle
             }
           end
         rescue Savon::SOAP::Fault => e
-          wrapped_response = WrappedResponse.new(e)
-          if wrapped_response.group_does_not_exist?
-            return wrapped_response
-          else
-            raise # Re-raise cause something else went wrong.
-          end
+          return WrappedResponse.new(e)
         end
       end
       WrappedResponse.new(:success => true)
@@ -144,12 +135,7 @@ module Ecircle
             }
           end
         rescue Savon::SOAP::Fault => e
-          wrapped_response = WrappedResponse.new(e)
-          if wrapped_response.member_does_not_exist?
-            return wrapped_response
-          else
-            raise # Re-raise cause something else went wrong.
-          end
+          return WrappedResponse.new(e)
         end
       end
       WrappedResponse.new(:success => true)
@@ -178,6 +164,7 @@ module Ecircle
           :session  => auth_token,
         }
       end
+      WrappedResponse.new(:success => true)
     end
 
     # Send a parametrized single message to user - you need an existing ecircle template ID for this.
@@ -200,12 +187,7 @@ module Ecircle
             }
           end
         rescue Savon::SOAP::Fault => e
-          wrapped_response = WrappedResponse.new(e)
-          if wrapped_response.message_id_does_not_exist?
-            return wrapped_response
-          else
-            raise # Re-raise cause something else went wrong.
-          end
+          return WrappedResponse.new(e)
         end
       end
       WrappedResponse.new(:success => true)
