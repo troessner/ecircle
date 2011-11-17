@@ -190,7 +190,7 @@ module Ecircle
     def send_parametrized_single_message_to_user user_id, message_id, names = [], values = []
       ensuring_logon do
         begin
-          @response = client.request :sendParametrizedSingleMessageToUser do
+          client.request :sendParametrizedSingleMessageToUser do
             soap.body = {
               :session           => auth_token,
               :singleMessageId   => message_id,
@@ -200,7 +200,12 @@ module Ecircle
             }
           end
         rescue Savon::SOAP::Fault => e
-          return WrappedResponse.new(e)
+          wrapped_response = WrappedResponse.new(e)
+          if wrapped_response.message_id_does_not_exist?
+            return wrapped_response
+          else
+            raise # Re-raise cause something else went wrong.
+          end
         end
       end
       WrappedResponse.new(:success => true)

@@ -43,6 +43,10 @@ module Ecircle
       @fault_code == 502 && @error_message = 'Permission Problem'
     end
 
+    def message_id_does_not_exist?
+      @error_message =~ /MessageInfo '(\d+)' not found/
+    end
+
     def success?
       @success
     end
