@@ -20,6 +20,7 @@ Features
 The following methods are implemented:
 
 * createMember
+* createOrUpdateGroup
 * createOrUpdateUserByEmail
 * deleteGroup
 * deleteMember
@@ -38,7 +39,6 @@ To do
 
 * Fix TODOs in source code
 * Implement missing API methods:
- * createOrUpdateGroup
  * deleteUser
  * deleteUserByEmail
  * lookupGroups
@@ -76,8 +76,7 @@ Session tokens will be re-used to keep the number of session related traffic to 
 Response
 -------------
 
-The ecircle gem will always return a wrapped response. Except for when it doesn't because I didn't find the time which is
-for create_or_update_user_by_email and logon (see examples below or the API doc).
+The ecircle gem will always return a wrapped response for all API methods, except for the logon method (see examples below or the API doc).
 
 The wrapped response object is just a neat abstraction to hide Ecircle's horrible, horrible error handling from you and provides several methods for doing so.
 
@@ -101,26 +100,33 @@ Examples
     # Given you have called Ecircle.configure appropriatly...
 
     # 1.) Create a user
-    uid = Ecircle.create_or_update_user_by_email 'your@email.com'
+    r = Ecircle.create_or_update_user_by_email 'your@email.com'
+    uid = r.ecircle_id
     puts "Ecircle user ID: #{uid}"
 
-    # 2.) Add this user as a member to a group - e.g. for newsletters
-    response = Ecircle.create_member uid, 'your_group_id'
-    puts "Ecircle member Id: #{response.ecircle_id}"
+    # 2.) Create a group
+    r = Ecircle.create_or_update_group :name => 'ecircletestgroup', :description => 'ecircletestgroup', :email => 'email@your.ecircle.domain.de'
+    gid = r.ecircle_id
+    puts "Ecircle group ID: #{gid}"
 
-    # 3.) Delete member from group - e.g. when he unsubscribes
+    # 3.) Add this user as a member to a group - e.g. for newsletters
+    r = Ecircle.create_member uid, gid
+    mid = r.ecircle_id
+    puts "Ecircle member Id: #{mid}"
+
+    # 4.) Delete member from group - e.g. when he unsubscribes
     Ecircle.delete_member mid
 
-    # 4.) Send the user a transactional email:
+    # 5.) Send the user a transactional email:
     Ecircle.send_parametrized_single_message_to_user uid,
                                                     your_template_id_at_ecircle,
                                                     [ :name, :message ],
                                                     [ 'Tom', 'welcome!' ]
 
-    # 5.) Delete the group
+    # 6.) Delete the group
     Ecircle.delete_group your_group_id
 
-    # 6.) Log out
+    # 7.) Log out
     Ecircle.logout
 
 
