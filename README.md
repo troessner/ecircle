@@ -115,7 +115,6 @@ The most usefull (and self-explanatory) would be:
   * no_such_user?
   * permission_problem?
   * no_such_group_when_a_user_was_given?
-TODO Explain all methods above.
 
 For details see [here](http://rubydoc.info/github/troessner/ecircle/master/Ecircle/WrappedResponse)
 
@@ -145,6 +144,7 @@ Since the asynchronous API is neither documented by ecircle nor intuitive at all
 To do
 -------------
 
+* Explain all WrappedResponse methods
 * Fix TODOs in source code
 * Implement missing API methods:
  * deleteUser
