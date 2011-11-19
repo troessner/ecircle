@@ -22,27 +22,29 @@ module Ecircle
       end
     end
 
+    # Useful for `delete_member` requests.
+    # @return [Boolean]
     def member_does_not_exist?
-      @fault_code == 100
+      @fault_code == 100 && @error_message == 'No Member Id'
     end
 
-    def group_does_not_exist?
-      @fault_code == 500
-    end
-
+    # This method will tell you if referred to a user id that doesn't exist for ecircle.
+    # Usefull for create_member requests
     def no_such_user?
-      @fault_code == 500
+      @fault_code == 103 && @error_message == 'No such User'
     end
 
+    # If you do a create_member request where the group id you pass in doesn't exist you get back a "permission problem".
+    # Yes, I know. It hurts.
+    # @return [Boolean]
     def permission_problem?
       @fault_code == 502 && @error_message = 'Permission Problem'
     end
+    alias :no_such_group? :permission_problem?
 
-    def no_such_group_when_a_user_was_given?
-      # YES, this IS horrible. Thanks ecircle. "Group does not exist" error codes vary depending on context.
-      @fault_code == 502 && @error_message = 'Permission Problem'
-    end
-
+    # This method will tell you if you referred to a message id that ecircle doesn't know about.
+    # Usefull for send_parametrized_message_to_user requests.
+    # @return[Boolean]
     def message_id_does_not_exist?
       @error_message =~ /MessageInfo '(\d+)' not found/
     end

@@ -32,6 +32,50 @@ Configuration
 
 The reason for the unusual configuration setting "sync_realm" is that there is also an asynchronous ecircle API with a different realm.
 
+Response handling
+-------------
+
+The ecircle gem will always return a wrapped response for all API methods, except for the logon method (see examples below or the API doc).
+
+The wrapped response object is just a neat abstraction to hide Ecircle's horrible, horrible error handling from you and provides several methods for doing so.
+
+The most usefull (and self-explanatory) would be:
+
+* success?
+* error_message
+* fault_code
+* ecircle_id IF the API returns an ID an success, e.g. for create_member and create_or_update_user_by_email
+* convenience methods which depend on your (failed request), e.g.:
+  * member_does_not_exist? (delete_member requests)
+  * message_id_does_not_exist? (send_parametrized_message_to_user requests)
+  * no_such_group? (create_member requests)
+  * no_such_user? (create_member_requests)
+
+For details see [here](http://rubydoc.info/github/troessner/ecircle/master/Ecircle/WrappedResponse)
+
+Features
+-------------
+
+###Synchronous API
+
+The following methods are implemented:
+
+* createMember
+* createOrUpdateGroup
+* createOrUpdateUserByEmail
+* deleteGroup
+* deleteMember
+* logon (only for debugging purposes)
+* logout
+* sendParametrizedSingleMessageToUser
+
+See the [online API documentation](http://rubydoc.info/github/troessner/ecircle/master/frames) for details on arguments and return values
+
+###Asnchronous API
+
+Since the asynchronous API is neither documented by ecircle nor intuitive at all, you're on your own. Jump to the examples section and good luck.
+
+
 Using ecircle
 -------------
 
@@ -95,57 +139,9 @@ Note the async_realm in the configure block, this another realm as for the sync 
 
     Ecircle::JobPackage.send_async_message_to_group @options
 
-
-Response
--------------
-
-The ecircle gem will always return a wrapped response for all API methods, except for the logon method (see examples below or the API doc).
-
-The wrapped response object is just a neat abstraction to hide Ecircle's horrible, horrible error handling from you and provides several methods for doing so.
-
-The most usefull (and self-explanatory) would be:
-
-* success?
-* error_message
-* fault_code
-* ecircle_id IF the API returns an ID an success, e.g. for create_member and create_or_update_user_by_email
-* convenience methods which depend on your (failed request), e.g.:
-  * member_does_not_exist? (create_member requests)
-  * group_does_not_exist? (create_member requests)
-  * no_such_user?
-  * permission_problem?
-  * no_such_group_when_a_user_was_given?
-
-For details see [here](http://rubydoc.info/github/troessner/ecircle/master/Ecircle/WrappedResponse)
-
-
-Features
--------------
-
-###Synchronous API
-
-The following methods are implemented:
-
-* createMember
-* createOrUpdateGroup
-* createOrUpdateUserByEmail
-* deleteGroup
-* deleteMember
-* logon (only for debugging purposes)
-* logout
-* sendParametrizedSingleMessageToUser
-
-See the [online API documentation](http://rubydoc.info/github/troessner/ecircle/master/frames) for details on arguments and return values
-
-###Asnchronous API
-
-Since the asynchronous API is neither documented by ecircle nor intuitive at all, you're on your own. Jump to the examples section and good luck.
-
 To do
 -------------
 
-* Explain all WrappedResponse methods
-* Fix TODOs in source code
 * Implement missing API methods:
  * deleteUser
  * deleteUserByEmail
