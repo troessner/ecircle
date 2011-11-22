@@ -7,6 +7,7 @@ describe Ecircle::Api do
       config.sync_realm  = ''
       config.password    = ''
     end
+    @group_email_address = 'test@your.sub.domain.com'
   end
 
   describe 'ensuring_logon' do
@@ -30,5 +31,36 @@ describe Ecircle::Api do
         end
       end
     end
+  end
+
+  describe 'create_or_update_group' do
+    it 'should return the ecircle id' do
+      group_attributes = { :name        => 'your name',
+                           :description => 'desc',
+                           :email       => @group_email_address }
+      res = Ecircle.create_or_update_group group_attributes
+      res.success?.should be_true
+      res.ecircle_id.to_s.should =~ /\d+/
+    end
+  end
+
+  describe 'create_member' do
+
+  end
+
+  describe 'create_or_update_user_by_email' do
+
+  end
+
+  describe 'delete_group' do
+
+  end
+
+  describe 'delete_member' do
+
+  end
+
+  describe 'send_parametrized_single_message_to_user' do
+
   end
 end

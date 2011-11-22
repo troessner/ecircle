@@ -22,9 +22,9 @@ module Ecircle
         if wrapped_response.not_authenticated? || wrapped_response.permission_problem?
           puts @@help
           raise InvalidLoginCredentials
+        else
+          raise
         end
-      else
-        raise
       end
 
       first_try = true
