@@ -15,34 +15,15 @@ module Ecircle
     #@private
     def ensuring_logon &block
       begin
-        @auth_token ||= logon
+        @auth_token = logon
+        block.call
       rescue Savon::SOAP::Fault => e
         # If we are here this probably means that our login credentials are wrong.
         wrapped_response = WrappedResponse.new(e)
         if wrapped_response.permission_problem?
           puts @@help
-          raise
         end
-      end
-
-      first_try = true
-      begin
-        block.call
-      rescue Savon::SOAP::Fault => e
-        # If we are here that probably means that our session token has expired.
-        wrapped_response = WrappedResponse.new(e)
-        if wrapped_response.permission_problem?
-          if first_try
-            first_try = false
-            @auth_token = logon
-            retry
-          else
-            puts "!!! Could not re-authenticate after session expired: #{wrapped_response.inspect} !!!"
-            raise
-          end
-        else
-          raise  # Re-raise cause something else went wrong.
-        end
+        raise
       end
     end
 
