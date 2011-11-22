@@ -15,15 +15,33 @@ module Ecircle
     #@private
     def ensuring_logon &block
       begin
-        @auth_token = logon
-        block.call
+        @auth_token ||= logon
       rescue Savon::SOAP::Fault => e
-        # If we are here this probably means that our login credentials are wrong.
+        # If we are here this means that our login credentials are wrong.
         wrapped_response = WrappedResponse.new(e)
-        if wrapped_response.permission_problem?
+        if wrapped_response.not_authenticated? || wrapped_response.permission_problem?
           puts @@help
+          raise InvalidLoginCredentials
         end
+      else
         raise
+      end
+
+      first_try = true
+      # -> In case the session token has expired (which means 'not_authenticated') retry once.
+      # -> In case we can't get a token on second there's nothing we can do, so give up.
+      # -> In all other cases (regardless if success? is true or false) return the response.
+      loop do
+        wrapped_response = block.call
+        if first_try && wrapped_response.not_authenticated?
+          first_try = false
+          @auth_token = logon
+        elsif wrapped_response.not_authenticated?
+          puts "!!! Could not re-authenticate after session expired: #{wrapped_response.inspect} !!!"
+          raise
+        else
+          return wrapped_response
+        end
       end
     end
 
@@ -56,9 +74,11 @@ module Ecircle
             }
           end
         rescue Savon::SOAP::Fault => e
-          return WrappedResponse.new(e)
+          WrappedResponse.new(e)
+        else
+          WrappedResponse.new :success => true,
+                              :ecircle_id => @response.body[:create_member_response][:create_member_return].to_s
         end
-        WrappedResponse.new :success => true, :ecircle_id => @response.body[:create_member_response][:create_member_return].to_s
       end
     end
 
@@ -78,9 +98,11 @@ module Ecircle
             }
           end
         rescue Savon::SOAP::Fault => e
-          return WrappedResponse.new(e)
+          WrappedResponse.new(e)
+        else
+          WrappedResponse.new :success => true,
+                              :ecircle_id => @response[:create_or_update_group_response][:create_or_update_group_return].to_i
         end
-      WrappedResponse.new :success => true, :ecircle_id => @response[:create_or_update_group_response][:create_or_update_group_return].to_i
       end
     end
 
@@ -100,10 +122,11 @@ module Ecircle
             }
           end
         rescue Savon::SOAP::Fault => e
-          return WrappedResponse.new(e)
+          WrappedResponse.new(e)
+        else
+          WrappedResponse.new :success => true,
+                              :ecircle_id => @response.body[:create_or_update_user_by_email_response][:create_or_update_user_by_email_return].to_i
         end
-        WrappedResponse.new :success => true,
-                            :ecircle_id => @response.body[:create_or_update_user_by_email_response][:create_or_update_user_by_email_return].to_i
       end
     end
 
@@ -121,10 +144,11 @@ module Ecircle
             }
           end
         rescue Savon::SOAP::Fault => e
-          return WrappedResponse.new(e)
+          WrappedResponse.new(e)
+        else
+          WrappedResponse.new(:success => true)
         end
       end
-      WrappedResponse.new(:success => true)
     end
 
     # Delete a member.
@@ -141,10 +165,11 @@ module Ecircle
             }
           end
         rescue Savon::SOAP::Fault => e
-          return WrappedResponse.new(e)
+          WrappedResponse.new(e)
+        else
+          WrappedResponse.new(:success => true)
         end
       end
-      WrappedResponse.new(:success => true)
     end
 
     # Logon. You don't need to call this explicitly but it's useful for debugging.
@@ -193,10 +218,11 @@ module Ecircle
             }
           end
         rescue Savon::SOAP::Fault => e
-          return WrappedResponse.new(e)
+          WrappedResponse.new(e)
+        else
+          WrappedResponse.new(:success => true)
         end
       end
-      WrappedResponse.new(:success => true)
     end
   end
 end

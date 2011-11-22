@@ -42,6 +42,10 @@ module Ecircle
     end
     alias :no_such_group? :permission_problem?
 
+    def not_authenticated?
+      @fault_code == 501 && @error_message == 'Not authenticated'
+    end
+
     # This method will tell you if you referred to a message id that ecircle doesn't know about.
     # Usefull for send_parametrized_message_to_user requests.
     # @return[Boolean]

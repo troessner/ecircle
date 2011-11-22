@@ -15,6 +15,8 @@ dir = File.dirname(__FILE__)
 end
 
 module Ecircle
+  class InvalidLoginCredentials < StandardError; end
+
   class << self
 
     #@private
