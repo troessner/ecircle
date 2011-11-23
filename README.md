@@ -146,13 +146,25 @@ To do
  * deleteUser
  * deleteUserByEmail
  * lookupGroups
-* Write specs
+* Add more functional specs
 
 Logon
 -------------
 
 The ecircle gem does the session handling for you, there is no need to logon explicitly.
 Session tokens will be re-used to keep the number of session related traffic to a minimum.
+
+Running the specs
+-------------
+In order to run the functional specs you need to fill in the configuration values at the top of spec/api_spec.rb.disabled
+with your ecircle account data and then rename spec/api_spec.rb.disabled to spec/api_spec.rb.
+
+Currently you need to clean up created groups and members manually afterwards (yes, I know that sucks) since
+ecircle doesn't offer a test api so all tests are going against the live API.
+Without a test API I figured it's too dangerous to execute destructive actions like delete_group so the only actions
+which are actually tested are non-destructive like create_or_update_user.... and so on, but never methods like delete_group.
+Finding data that has been created by the tests is pretty easy, right now there is only one user with email
+'apitest@apitest.com' and one or more groups whose names are 'API TEST' so you can easily find test remnants via the web interface.
 
 Documentation
 -------------
