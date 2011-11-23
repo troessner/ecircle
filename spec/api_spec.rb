@@ -14,11 +14,11 @@ describe Ecircle::Api do
   # TODO Add more edge cases where things can go wrong, e.g. create_or_update_user with an invalid email etc.
   before :each do
     Ecircle.configure do |config|
-      config.user        = 'api@dealtech.de'
-      config.sync_realm  = 'http://news.dealvertise.de'
-      config.password    = 'Wt!SZpihU4esK@!E$rmnXJA9d'
+      config.user        = ''
+      config.sync_realm  = ''
+      config.password    = ''
     end
-    @email_suffix = 'news.dealvertise.de' # This MUST be your ecircle domain e.g. 'newsletter.your.company.com'
+    @email_suffix = '' # This MUST be your ecircle domain e.g. 'newsletter.your.company.com'
     # You need to create this message before in the webinterface, there's no way of doing this automatically.
     @test_message_id = '1200095137'
   end
