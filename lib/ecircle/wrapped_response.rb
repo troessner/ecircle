@@ -50,7 +50,7 @@ module Ecircle
     # Usefull for send_parametrized_message_to_user requests.
     # @return[Boolean]
     def message_id_does_not_exist?
-      @error_message =~ /MessageInfo '(\d+)' not found/
+      !!(@error_message =~ /MessageInfo '(\d+)' not found/)
     end
 
     def success?

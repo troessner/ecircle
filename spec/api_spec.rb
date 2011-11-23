@@ -3,19 +3,19 @@ require 'spec_helper'
 describe Ecircle::Api do
   # IMPORTANT:
   # 1. In order to run this spec you need to fill in the configuration values with your
-  #            ecircle account data and
-  #            then rename the spec to api_spec.rb.
-  # 2. Currently you need to clean up created groups and members manually because, since
+  #    ecircle account data and then rename the spec to api_spec.rb.
+  # 2. Currently you need to clean up created groups and members manually since
   #    ecircle doesn't offer a test api all tests are going against the live API.
   #    Without a test API I figured it's too dangerous execute destructive actions like delete_group.
-  before  do
+  # TODO Add more edge cases where things can go wrong, e.g. create_or_update_user with an invalid email etc.
+  before :each do
     Ecircle.configure do |config|
-      config.user        = ''
-      config.sync_realm  = ''
-      config.password    = ''
+      config.user        = 'api@dealtech.de'
+      config.sync_realm  = 'http://news.dealvertise.de'
+      config.password    = 'Wt!SZpihU4esK@!E$rmnXJA9d'
     end
-    @email_suffix = '' # This MUST be your ecircle domain e.g. 'newsletter.your.company.com'
-    # You need to create this message before in the webinterface, there's no way of doing this automatically. 
+    @email_suffix = 'news.dealvertise.de' # This MUST be your ecircle domain e.g. 'newsletter.your.company.com'
+    # You need to create this message before in the webinterface, there's no way of doing this automatically.
     @test_message_id = '1200095137'
   end
 
@@ -46,7 +46,7 @@ describe Ecircle::Api do
     it 'should return the ecircle id' do
       group_attributes = { :name        => 'API TEST',
                            :description => 'API TEST',
-                           :email       => random_group_email(@suffix) }
+                           :email       => random_group_email(@email_suffix) }
       res = Ecircle.create_or_update_group group_attributes
       res.success?.should be_true
       res.ecircle_id.to_s.should =~ /\d+/
@@ -54,11 +54,13 @@ describe Ecircle::Api do
   end
 
   describe 'create_member' do
-    group_id = create_random_group @suffix
-    user_id  = test_user_id
-    res = create_member user_id, group_id
-    res.success?.should be_true
-    res.ecircle_id.to_s.should =~ /\d+/
+    it 'should create a member' do
+      group_id = create_random_group @email_suffix
+      user_id  = test_user_id
+      res = Ecircle.create_member user_id, group_id
+      res.success?.should be_true
+      res.ecircle_id.to_s.should =~ /\d+/
+    end
   end
 
   describe 'create_or_update_user_by_email' do
@@ -70,15 +72,23 @@ describe Ecircle::Api do
   end
 
   describe 'delete_group' do
-    # TODO
+    # TODO Implement but ONLY once ecircle provides a test API.
   end
 
   describe 'delete_member' do
-    # TODO
+    # TODO Implement but ONLY once ecircle provides a test API.
   end
 
   describe 'send_parametrized_single_message_to_user' do
-    res = Ecircle.send_parametrized_single_message_to_user test_user_id, @test_message_id
-    res.success?.should be_true
+    it 'should return success' do
+      res = Ecircle.send_parametrized_single_message_to_user test_user_id, @test_message_id
+      res.success?.should be_true
+    end
+
+    it 'should return a corresponding error message if the template does not exist' do
+      res = Ecircle.send_parametrized_single_message_to_user test_user_id, Random.number(10000)
+      res.success?.should be_false
+      res.message_id_does_not_exist?.should be_true
+    end
   end
 end
