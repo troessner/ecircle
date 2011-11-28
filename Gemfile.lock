@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ecircle (0.1.3)
+    ecircle (0.1.4)
       activesupport
       i18n
       rake
@@ -10,7 +10,7 @@ PATH
 GEM
   remote: http://rubygems.org/
   specs:
-    activesupport (3.1.1)
+    activesupport (3.1.3)
       multi_json (~> 1.0)
     akami (1.0.0)
       gyoku (>= 0.4.0)
