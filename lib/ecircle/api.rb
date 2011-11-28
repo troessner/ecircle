@@ -11,39 +11,9 @@ module Ecircle
     !!!
     doc
 
-
-    #@private
-    def ensuring_logon &block
-      begin
-        @auth_token ||= logon
-      rescue Savon::SOAP::Fault => e
-        # If we are here this means that our login credentials are wrong.
-        wrapped_response = WrappedResponse.new(e)
-        if wrapped_response.not_authenticated? || wrapped_response.permission_problem?
-          puts @@help
-          raise InvalidLoginCredentials
-        else
-          raise
-        end
-      end
-
-      first_try = true
-      # -> In case the session token has expired (which means 'not_authenticated') retry once.
-      # -> In case we can't get a token on second there's nothing we can do, so give up.
-      # -> In all other cases (regardless if success? is true or false) return the response.
-      loop do
-        wrapped_response = block.call
-        if first_try && wrapped_response.not_authenticated?
-          first_try = false
-          @auth_token = logon
-        elsif wrapped_response.not_authenticated?
-          puts "!!! Could not re-authenticate after session expired: #{wrapped_response.inspect} !!!"
-          raise
-        else
-          return wrapped_response
-        end
-      end
-    end
+    # According to http://developer.ecircle-ag.com/apiwiki/wiki/SynchronousSoapAPI#section-SynchronousSoapAPI-SampleProtocolExcerpt,
+    # a session expires after 10 minutes (600 seconds) of idleness. We give ourselves a 30-second margin.
+    AUTH_TOKEN_TIMEOUT = 570
 
     # @private
     def client
@@ -62,24 +32,19 @@ module Ecircle
     # @param [Boolean] send_message send a message by ecircle
     # @return [WrappedResponse]
     def create_member user_id, group_id, invite = false, send_message = false
-      ensuring_logon do
-        begin
-          @response = client.request :createMember do
-            soap.body = {
-              :session     => auth_token,
-              :userId      => user_id,
-              :groupId     => group_id,
-              :invite      => invite.to_s,
-              :sendMessage => send_message.to_s
-            }
-          end
-        rescue Savon::SOAP::Fault => e
-          WrappedResponse.new(e)
-        else
-          WrappedResponse.new :success => true,
-                              :ecircle_id => @response.body[:create_member_response][:create_member_return].to_s
-        end
+      response = client.request :createMember do
+        soap.body = {
+          :session     => obtain_auth_token,
+          :userId      => user_id,
+          :groupId     => group_id,
+          :invite      => invite.to_s,
+          :sendMessage => send_message.to_s
+        }
       end
+      WrappedResponse.new :success => true,
+                          :ecircle_id => response.body[:create_member_response][:create_member_return].to_s
+    rescue Savon::SOAP::Fault => e
+      WrappedResponse.new(e)
     end
 
     # Create or update group
@@ -89,21 +54,16 @@ module Ecircle
     # @return [WrappedResponse]
     # Important note: `email` must be unique across all groups AND must be a subdomain of the system you registered at ecircle.
     def create_or_update_group group_attributes
-      ensuring_logon do
-        begin
-          @response = client.request :createOrUpdateGroup do
-            soap.body = {
-              :session   => auth_token,
-              :groupXml  => Helper.build_group_xml(group_attributes)
-            }
-          end
-        rescue Savon::SOAP::Fault => e
-          WrappedResponse.new(e)
-        else
-          WrappedResponse.new :success => true,
-                              :ecircle_id => @response[:create_or_update_group_response][:create_or_update_group_return].to_i
-        end
+      response = client.request :createOrUpdateGroup do
+        soap.body = {
+          :session   => obtain_auth_token,
+          :groupXml  => Helper.build_group_xml(group_attributes)
+        }
       end
+      WrappedResponse.new :success => true,
+                          :ecircle_id => response[:create_or_update_group_response][:create_or_update_group_return].to_i
+    rescue Savon::SOAP::Fault => e
+      WrappedResponse.new(e)
     end
 
     # Create or update user by email
@@ -112,22 +72,17 @@ module Ecircle
     # @param [Hash] user_xml, in it's most simple form a { :email => 'test@test.com' } is sufficient
     # @return [Integer] the user id
     def create_or_update_user_by_email user_attributes
-      ensuring_logon do
-        begin
-          @response = client.request :createOrUpdateUserByEmail do
-            soap.body = {
-              :session     => auth_token, # TODO We can't use @auth_token here cause then the session_id is nil. Why?
-              :userXml     => Helper.build_user_xml(user_attributes),
-              :sendMessage => 0
-            }
-          end
-        rescue Savon::SOAP::Fault => e
-          WrappedResponse.new(e)
-        else
-          WrappedResponse.new :success => true,
-                              :ecircle_id => @response.body[:create_or_update_user_by_email_response][:create_or_update_user_by_email_return].to_i
-        end
+      response = client.request :createOrUpdateUserByEmail do
+        soap.body = {
+          :session     => obtain_auth_token,
+          :userXml     => Helper.build_user_xml(user_attributes),
+          :sendMessage => 0
+        }
       end
+      WrappedResponse.new :success => true,
+                          :ecircle_id => response.body[:create_or_update_user_by_email_response][:create_or_update_user_by_email_return].to_i
+    rescue Savon::SOAP::Fault => e
+      WrappedResponse.new(e)
     end
 
     # Delete a member.
@@ -135,20 +90,15 @@ module Ecircle
     # @param [Integer] group_id ecircle group id
     # @return [WrappedResponse]
     def delete_group group_id
-      ensuring_logon do
-        begin
-          @response = client.request :deleteGroup do
-            soap.body = {
-              :session  => auth_token,
-              :memberId => group_id
-            }
-          end
-        rescue Savon::SOAP::Fault => e
-          WrappedResponse.new(e)
-        else
-          WrappedResponse.new(:success => true)
-        end
+      response = client.request :deleteGroup do
+        soap.body = {
+          :session  => obtain_auth_token,
+          :memberId => group_id
+        }
       end
+      WrappedResponse.new(:success => true)
+    rescue Savon::SOAP::Fault => e
+      WrappedResponse.new(e)
     end
 
     # Delete a member.
@@ -156,34 +106,37 @@ module Ecircle
     # @param [Integer] member_id ecircle member id
     # @return [WrappedResponse]
     def delete_member member_id
-      ensuring_logon do
-        begin
-          @response = client.request :deleteMember do
-            soap.body = {
-              :session  => auth_token,
-              :memberId => member_id
-            }
-          end
-        rescue Savon::SOAP::Fault => e
-          WrappedResponse.new(e)
-        else
-          WrappedResponse.new(:success => true)
-        end
+      client.request :deleteMember do
+        soap.body = {
+          :session  => obtain_auth_token,
+          :memberId => member_id
+        }
       end
+      WrappedResponse.new(:success => true)
+    rescue Savon::SOAP::Fault => e
+      WrappedResponse.new(e)
     end
 
     # Logon. You don't need to call this explicitly but it's useful for debugging.
     #
     # @return [String] the session id
     def logon
-      @response = client.request :logon do
+      response = client.request :logon do
         soap.body = {
           :user   => Ecircle.configuration.user,
           :realm  => Ecircle.configuration.sync_realm,
           :passwd => Ecircle.configuration.password
         }
       end
-      @response.body[:logon_response][:logon_return].to_s
+      response.body[:logon_response][:logon_return].to_s
+    rescue Savon::SOAP::Fault => e
+      wrapped_response = WrappedResponse.new(e)
+      if wrapped_response.not_authenticated? || wrapped_response.permission_problem?
+        puts @@help
+        raise InvalidLoginCredentials
+      else
+        raise
+      end
     end
 
     # Log out. Uses the last session token.
@@ -206,23 +159,28 @@ module Ecircle
     # @param [Array] the values of the variables you want to interpolate in the template
     # @return [WrappedResponse]
     def send_parametrized_single_message_to_user user_id, message_id, names = [], values = []
-      ensuring_logon do
-        begin
-          client.request :sendParametrizedSingleMessageToUser do
-            soap.body = {
-              :session           => auth_token,
-              :singleMessageId   => message_id,
-              :userId            => user_id,
-              :names             => names,
-              :values            => values
-            }
-          end
-        rescue Savon::SOAP::Fault => e
-          WrappedResponse.new(e)
-        else
-          WrappedResponse.new(:success => true)
-        end
+      client.request :sendParametrizedSingleMessageToUser do
+        soap.body = {
+          :session           => obtain_auth_token,
+          :singleMessageId   => message_id,
+          :userId            => user_id,
+          :names             => names,
+          :values            => values
+        }
       end
+      WrappedResponse.new(:success => true)
+    rescue Savon::SOAP::Fault => e
+      WrappedResponse.new(e)
+    end
+
+    def obtain_auth_token
+      @auth_token = logon unless auth_token_valid?
+      @auth_token_last_used_at = Time.now
+      @auth_token
+    end
+
+    def auth_token_valid?
+      @auth_token_last_used_at && Time.now - @auth_token_last_used_at < AUTH_TOKEN_TIMEOUT
     end
   end
 end

@@ -25,6 +25,9 @@ GEM
     i18n (0.6.0)
     linecache19 (0.5.12)
       ruby_core_source (>= 0.1.4)
+    metaclass (0.0.1)
+    mocha (0.10.0)
+      metaclass (~> 0.0.1)
     multi_json (1.0.3)
     nokogiri (1.5.0)
     nori (1.0.2)
@@ -57,6 +60,10 @@ GEM
       nokogiri (>= 1.4.0)
       nori (~> 1.0)
       wasabi (~> 2.0)
+    savon_spec (0.1.6)
+      mocha (>= 0.9.8)
+      rspec (>= 2.0.0)
+      savon (>= 0.8.0)
     wasabi (2.0.0)
       nokogiri (>= 1.4.0)
     yard (0.7.3)
@@ -69,4 +76,5 @@ DEPENDENCIES
   random_data (= 1.5.2)
   rspec (= 2.6.0)
   ruby-debug19
+  savon_spec (~> 0.1.6)
   yard
