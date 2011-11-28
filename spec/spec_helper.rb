@@ -1,7 +1,5 @@
-dir = File.dirname(__FILE__)
-require File.join(dir, '..', 'lib', 'ecircle')
-
-require 'random_data'
+Bundler.require
+require 'savon_spec'
 
 def random_group_email suffix
   "apitest#{Random.number(100000)}@#{suffix}"
@@ -16,4 +14,13 @@ end
 
 def test_user_id
   @ecircle_user_id ||= Ecircle.create_or_update_user_by_email(:email => 'apitest@apitest.com').ecircle_id
+end
+
+Savon::Spec::Fixture.path = File.expand_path('../fixtures', __FILE__)
+
+RSpec::configure do |c|
+  c.include Savon::Spec::Macros
+  c.treat_symbols_as_metadata_keys_with_true_values = true
+  c.filter_run :focus => true
+  c.run_all_when_everything_filtered = true
 end
