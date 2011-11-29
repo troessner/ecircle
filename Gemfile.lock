@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ecircle (0.1.4)
+    ecircle (0.1.5)
       activesupport
       i18n
       rake
@@ -28,7 +28,7 @@ GEM
     metaclass (0.0.1)
     mocha (0.10.0)
       metaclass (~> 0.0.1)
-    multi_json (1.0.3)
+    multi_json (1.0.4)
     nokogiri (1.5.0)
     nori (1.0.2)
     rack (1.3.5)
