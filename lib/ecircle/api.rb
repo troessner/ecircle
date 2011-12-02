@@ -12,8 +12,10 @@ module Ecircle
     doc
 
     # According to http://developer.ecircle-ag.com/apiwiki/wiki/SynchronousSoapAPI#section-SynchronousSoapAPI-SampleProtocolExcerpt,
-    # a session expires after 10 minutes (600 seconds) of idleness. We give ourselves a 30-second margin.
-    AUTH_TOKEN_TIMEOUT = 570
+    # a session expires after 10 minutes (600 seconds) of idleness.
+    # Our experiments showed that a session can expire even after around 2 minutes,
+    # so we'll just get a new session every 1 minute.
+    AUTH_TOKEN_TIMEOUT = 60
 
     # @private
     def client
