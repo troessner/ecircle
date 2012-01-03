@@ -56,5 +56,12 @@ module Ecircle
     def success?
       @success
     end
+
+    # In case we try to send the same message twice within one second ecircle raises an exception (using an extremely
+    # helpful response).
+    # @return[Boolean]
+    def message_triggered_too_often?
+      @fault_code == 200 && @error_message == 'Unexpected eC-M Reply Code: 304'
+    end
   end
 end
