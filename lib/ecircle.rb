@@ -1,4 +1,3 @@
-require 'active_support/all'
 require 'savon'
 
 dir = File.dirname(__FILE__)
