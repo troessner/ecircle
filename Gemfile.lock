@@ -3,7 +3,6 @@ PATH
   specs:
     ecircle (0.1.7)
       activesupport
-      rake
       savon (>= 0.9.7)
 
 GEM
@@ -71,6 +70,7 @@ PLATFORMS
 
 DEPENDENCIES
   ecircle!
+  rake
   random_data (= 1.5.2)
   rspec (= 2.6.0)
   ruby-debug19

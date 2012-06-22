@@ -19,8 +19,8 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   s.add_dependency 'activesupport'
-  s.add_dependency 'rake'
   s.add_dependency 'savon', '>=0.9.7'
+  s.add_development_dependency 'rake'
   s.add_development_dependency 'random_data', '1.5.2'
   s.add_development_dependency 'rspec', '2.6.0'
   s.add_development_dependency 'savon_spec'
