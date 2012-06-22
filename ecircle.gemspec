@@ -19,7 +19,6 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   s.add_dependency 'activesupport'
-  s.add_dependency 'i18n'
   s.add_dependency 'rake'
   s.add_dependency 'savon', '>=0.9.7'
   s.add_development_dependency 'random_data', '1.5.2'

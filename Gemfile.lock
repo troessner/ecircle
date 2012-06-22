@@ -3,7 +3,6 @@ PATH
   specs:
     ecircle (0.1.7)
       activesupport
-      i18n
       rake
       savon (>= 0.9.7)
 
