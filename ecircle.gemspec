@@ -20,8 +20,8 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'savon', '>=0.9.7'
   s.add_development_dependency 'rake'
-  s.add_development_dependency 'random_data', '1.5.2'
-  s.add_development_dependency 'rspec', '2.6.0'
+  s.add_development_dependency 'random_data'
+  s.add_development_dependency 'rspec'
   s.add_development_dependency 'savon_spec'
   s.add_development_dependency 'yard'
   s.add_development_dependency 'ruby-debug19'
