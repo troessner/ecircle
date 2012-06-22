@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Ecircle::JobPackage do
   before :all do
-    date = 1.hour.from_now
+    date = Time.now + 3600
     @options = {
       :request_id                   => '1234',
       :group_id                     => '5678',

@@ -52,8 +52,8 @@ describe Ecircle::Api do
 
   describe 'create_member' do
     it 'should obtain an auth token' do
-      savon.stubs(:createMember).returns(:success)
-      subject.expects(:obtain_auth_token)
+      savon.expects(:createMember).returns(:success)
+      subject.should_receive(:obtain_auth_token)
 
       subject.create_member(nil, nil)
     end
@@ -63,14 +63,14 @@ describe Ecircle::Api do
         with(:session => 'foo', :userId => 1, :groupId => 2,
              :invite => 'false', :sendMessage => 'false').
         returns(:success)
-      subject.stubs(:obtain_auth_token).returns('foo')
+      subject.stub(:obtain_auth_token => 'foo')
 
       wrapped_response = subject.create_member(1, 2)
     end
 
     it 'should parse proper response segment' do
-      savon.stubs(:createMember).returns(:success)
-      subject.stubs(:obtain_auth_token)
+      savon.expects(:createMember).returns(:success)
+      subject.stub(:obtain_auth_token)
 
       wrapped_response = subject.create_member(nil, nil)
 

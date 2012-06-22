@@ -1,4 +1,4 @@
-Bundler.require
+require 'ecircle'
 require 'savon_spec'
 
 def random_group_email suffix
@@ -24,3 +24,5 @@ RSpec::configure do |c|
   c.filter_run :focus => true
   c.run_all_when_everything_filtered = true
 end
+
+HTTPI.log = false
