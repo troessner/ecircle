@@ -1,9 +1,7 @@
 require 'savon'
 
-dir = File.dirname(__FILE__)
-
 %w!api version configuration helper job_package wrapped_response!.each do |file|
-  require File.join(dir, 'ecircle', file)
+  require "ecircle/#{file}"
 end
 
 module Ecircle
