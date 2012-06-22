@@ -1,17 +1,7 @@
-require 'bundler'
-require 'active_support/all'
 require 'savon'
 
-# TODO Improve requiring of gems.
-# `Bundler.require :default` works for an irb session with `require lib/ecircle` (e.g. Savon exists)
-# but this won't work from within the rails project since `Bundler.require :default` uses the current rails
-# projects Gemfile, not ecircle's one. Not sure if there is a solution for this problem, but I'd
-# rather do requires via bundler instead of explicit requires.
-
-dir = File.dirname(__FILE__)
-
 %w!api version configuration helper job_package wrapped_response!.each do |file|
-  require File.join(dir, 'ecircle', file)
+  require "ecircle/#{file}"
 end
 
 module Ecircle
