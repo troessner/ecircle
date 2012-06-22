@@ -1,4 +1,4 @@
-Bundler.require
+require 'ecircle'
 require 'savon_spec'
 
 def random_group_email suffix
