@@ -19,6 +19,12 @@ module Ecircle
 
     # @private
     def client
+
+      Savon.configure do |config|
+        config.log = Ecircle.configuration.debug 
+      end
+      HTTPI.log = Ecircle.configuration.debug
+      
       @client ||= Savon::Client.new do
         wsdl.document  = Ecircle.configuration.wsdl
         wsdl.endpoint  = Ecircle.configuration.endpoint
