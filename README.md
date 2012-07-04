@@ -89,7 +89,7 @@ Using ecircle
     # Given you have called Ecircle.configure appropriatly...
 
     # 1.) Create a user
-    r = Ecircle.create_or_update_user_by_email 'your@email.com'
+    r = Ecircle.create_or_update_user_by_email :email => 'your@email.com'
     uid = r.ecircle_id
     puts "Ecircle user ID: #{uid}"
 
