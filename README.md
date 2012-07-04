@@ -15,11 +15,16 @@ The existing API methods can be considered stable and are used in production.
 Installation
 -------------
 
-Either as a gem:
+Either via rubygems:
 
     gem install ecircle
 
 or via Bundler by adding it to your Gemfile.
+
+Supported Ruby versions
+-------------
+
+Ruby 1.8 is *not* supported and will never be. If you want to use this gem, you'll have to use Ruby 1.9, which you should do anyways.
 
 Configuration
 -------------
